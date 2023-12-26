@@ -60,17 +60,17 @@ class UserController extends Controller
         if (!$user) {
             throw new ModelNotFoundException('User not found with ID: ' . $userId);
         }
-            try {
-                $user->update([
-                    'first_name' => $userData['first_name'],
-                    'last_name' => $userData['last_name'],
-                    'email' => $userData['email'],
-                    'password' => Hash::make($userData['password']),
-                ]);
-                return response($user, HttpResponse::HTTP_ACCEPTED);
-            } catch (\Throwable $th) {
-                Log::error('Error updating user: ' . $th->getMessage());
-            }
+        try {
+            $user->update([
+                'first_name' => $userData['first_name'],
+                'last_name' => $userData['last_name'],
+                'email' => $userData['email'],
+                'password' => Hash::make($userData['password']),
+            ]);
+            return response($user, HttpResponse::HTTP_ACCEPTED);
+        } catch (\Throwable $th) {
+            Log::error('Error updating user: ' . $th->getMessage());
+        }
 
 
     }
@@ -78,7 +78,8 @@ class UserController extends Controller
     /**
      * delete a user from the database
      */
-    public function destroy ($userId) {
+    public function destroy($userId)
+    {
         $user = User::find($userId);
 
         if (!$user) {
@@ -87,6 +88,7 @@ class UserController extends Controller
 
         try {
             $user->delete();
+            return response(null, HttpResponse::HTTP_NO_CONTENT);
         } catch (\Throwable $th) {
             Log::error('Error deleting user: ' . $th->getMessage());
         }
