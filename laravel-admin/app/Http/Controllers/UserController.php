@@ -53,7 +53,7 @@ class UserController extends Controller
     /**
      * updates an existing user
      */
-    public function update($userId, $userData)
+    public function update($userId, Request $userData)
     {
         $user = User::find($userId);
 
@@ -67,6 +67,7 @@ class UserController extends Controller
                     'email' => $userData['email'],
                     'password' => Hash::make($userData['password']),
                 ]);
+                return response($user, HttpResponse::HTTP_ACCEPTED);
             } catch (\Throwable $th) {
                 Log::error('Error updating user: ' . $th->getMessage());
             }
