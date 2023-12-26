@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Client\Response;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Stmt\TryCatch;
@@ -30,16 +32,18 @@ class UserController extends Controller
     /**
      * add a new user to the database
      */
-    public function store($userData)
+    public function store(Request $userData)
     {
+
         try {
-            User::create([
+            $user = User::create([
 
                 'first_name' => $userData['first_name'],
                 'last_name' => $userData['last_name'],
                 'email' => $userData['email'],
                 'password' => Hash::make($userData['password'])
             ]);
+            return response($user, HttpResponse::HTTP_CREATED);
 
         } catch (\Throwable $th) {
             Log::error('Error creating user: ' . $th->getMessage());
