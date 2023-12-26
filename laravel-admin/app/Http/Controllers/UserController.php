@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -54,7 +55,7 @@ class UserController extends Controller
     /**
      * updates an existing user
      */
-    public function update($userId, Request $userData)
+    public function update($userId, UserUpdateRequest $userData)
     {
         $user = User::find($userId);
 
@@ -62,12 +63,8 @@ class UserController extends Controller
             throw new ModelNotFoundException('User not found with ID: ' . $userId);
         }
         try {
-            $user->update([
-                'first_name' => $userData['first_name'],
-                'last_name' => $userData['last_name'],
-                'email' => $userData['email'],
-                'password' => Hash::make($userData['password']),
-            ]);
+            $user->update($userData->only('first_name', 'last_name', 'email'));
+
             return response($user, HttpResponse::HTTP_ACCEPTED);
         } catch (\Throwable $th) {
             Log::error('Error updating user: ' . $th->getMessage());
