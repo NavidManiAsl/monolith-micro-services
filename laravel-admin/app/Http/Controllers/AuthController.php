@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthRegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class AuthController extends Controller
         ],Response::HTTP_UNAUTHORIZED);
     }
 
-    public function register(Request $request){
+    public function register(AuthRegisterRequest $request){
         try{
             $user = User::create([
                 'first_name' => $request->input('first_name'),
