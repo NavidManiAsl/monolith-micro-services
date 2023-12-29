@@ -43,13 +43,15 @@ class UserController extends Controller
                 'first_name' => $userData['first_name'],
                 'last_name' => $userData['last_name'],
                 'email' => $userData['email'],
-                'password' => Hash::make($userData['password'])
+                'password' => Hash::make('password')
             ]);
             return response($user, HttpResponse::HTTP_CREATED);
 
         } catch (\Throwable $th) {
             Log::error('Error creating user: ' . $th->getMessage());
+            return response('Unexpected error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
+
     }
 
     /**
