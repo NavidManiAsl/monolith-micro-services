@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use PhpParser\Node\Stmt\TryCatch;
 
 class UserController extends Controller
 {
@@ -91,6 +91,47 @@ class UserController extends Controller
             return response(null, HttpResponse::HTTP_NO_CONTENT);
         } catch (\Throwable $th) {
             Log::error('Error deleting user: ' . $th->getMessage());
+        }
+    }
+
+    /**
+     * Show user information
+     */
+    public function user()
+    {
+        return Auth::user();
+    }
+
+    /**
+     * Authorized user can update its personal info
+     */
+    public function updateInfo(UserUpdateRequest $request)
+    {
+        $user = Auth::user();
+
+
+        try {
+            $user->update($request->only('first_name', 'last_name', 'email'));
+
+            return response($user, HttpResponse::HTTP_ACCEPTED);
+        } catch (\Throwable $th) {
+            Log::error('Error updating user: ' . $th->getMessage());
+        }
+    }
+
+    /**
+     * Authorized user can update its password
+     */
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        try {
+            $user->update([
+                'password' => Hash::make($request->input('password'))
+            ]);
+            return response('password has been updated', HttpResponse::HTTP_ACCEPTED);
+        } catch (\Throwable $th) {
+            Log::error('Error updating password' . $th->getMessage());
         }
     }
 }
