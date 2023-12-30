@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
-use Dotenv\Loader\Resolver;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -55,7 +54,7 @@ class RoleController extends Controller
     public function update(Request $request, string $id)
     {
         $role = Role::find($id);
-       
+
         if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }

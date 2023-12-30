@@ -9,8 +9,6 @@ use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use Illuminate\Http\Client\Request;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
