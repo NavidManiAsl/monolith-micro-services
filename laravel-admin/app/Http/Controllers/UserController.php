@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateInfoRequest;
+use App\Http\Requests\UserUpdatePasswordRequest;
 use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -105,7 +107,7 @@ class UserController extends Controller
     /**
      * Authorized user can update its personal info
      */
-    public function updateInfo(UserUpdateRequest $request)
+    public function updateInfo(UserUpdateInfoRequest $request)
     {
         $user = Auth::user();
 
@@ -122,7 +124,7 @@ class UserController extends Controller
     /**
      * Authorized user can update its password
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(UserUpdatePasswordRequest $request)
     {
         $user = Auth::user();
         try {
