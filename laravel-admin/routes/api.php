@@ -14,3 +14,6 @@ Route::post('/register', [AuthController::class, 'register']);
 
 
 Route::apiResource('users',UserController::class)->middleware('auth:api');
+Route::get('user', [UserController::class, 'user']);
+Route::put('users/info', [UserController::class, 'updateInfo']);
+Route::put('users/password', [UserController::class, 'updatePassword']);
