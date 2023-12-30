@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
+use Dotenv\Loader\Resolver;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -28,9 +29,11 @@ class RoleController extends Controller
             $role = Role::create([
                 'name' => $request->input('name')
             ]);
+
             return response($role, Response::HTTP_CREATED);
         } catch (Throwable $th) {
             Log::error('Error create role: ' . $th->getMessage());
+            return response(['Error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -39,7 +42,11 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
-        return Role::find($id);
+        $role = Role::find($id);
+        if(!$role){
+            return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
+        }
+        return response($role, Response::HTTP_OK);
     }
 
     /**
@@ -48,6 +55,7 @@ class RoleController extends Controller
     public function update(Request $request, string $id)
     {
         $role = Role::find($id);
+       
         if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
