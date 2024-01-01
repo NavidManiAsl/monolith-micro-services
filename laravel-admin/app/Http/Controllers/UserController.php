@@ -50,7 +50,7 @@ class UserController extends Controller
                 'password' => Hash::make('password'),
                 'role_id' => $userData['role_id']
             ]);
-            return response($user, HttpResponse::HTTP_CREATED);
+            return response(new UserResource($user), HttpResponse::HTTP_CREATED);
 
         } catch (\Throwable $th) {
             Log::error('Error creating user: ' . $th->getMessage());
@@ -72,7 +72,7 @@ class UserController extends Controller
         try {
             $user->update($userData->only('first_name', 'last_name', 'email', 'role_id'));
 
-            return response($user, HttpResponse::HTTP_ACCEPTED);
+            return response(new UserResource($user), HttpResponse::HTTP_ACCEPTED);
         } catch (\Throwable $th) {
             Log::error('Error updating user: ' . $th->getMessage());
         }
@@ -118,7 +118,7 @@ class UserController extends Controller
         try {
             $user->update($request->only('first_name', 'last_name', 'email'));
 
-            return response($user, HttpResponse::HTTP_ACCEPTED);
+            return response(new UserResource($user), HttpResponse::HTTP_ACCEPTED);
         } catch (\Throwable $th) {
             Log::error('Error updating user: ' . $th->getMessage());
         }
