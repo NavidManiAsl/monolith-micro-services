@@ -6,12 +6,14 @@ use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateInfoRequest;
 use App\Http\Requests\UserUpdatePasswordRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+
 
 class UserController extends Controller
 {
@@ -20,7 +22,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::with('role')->paginate(10);
+        $users = User::paginate(10);
+        return UserResource::collection($users);
     }
 
     /**
@@ -28,7 +31,8 @@ class UserController extends Controller
      */
     public function show($userId)
     {
-        return User::with('role')->find($userId);
+        $user = User::find($userId);
+        return new UserResource($user);
     }
 
     /**
