@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::paginate(10);
+        return User::with('role')->paginate(10);
     }
 
     /**
@@ -28,7 +28,7 @@ class UserController extends Controller
      */
     public function show($userId)
     {
-        return User::find($userId);
+        return User::with('role')->find($userId);
     }
 
     /**
@@ -43,7 +43,8 @@ class UserController extends Controller
                 'first_name' => $userData['first_name'],
                 'last_name' => $userData['last_name'],
                 'email' => $userData['email'],
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'role_id' => $userData['role_id']
             ]);
             return response($user, HttpResponse::HTTP_CREATED);
 
@@ -65,7 +66,7 @@ class UserController extends Controller
             throw new ModelNotFoundException('User not found with ID: ' . $userId);
         }
         try {
-            $user->update($userData->only('first_name', 'last_name', 'email'));
+            $user->update($userData->only('first_name', 'last_name', 'email', 'role_id'));
 
             return response($user, HttpResponse::HTTP_ACCEPTED);
         } catch (\Throwable $th) {
