@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Http\Resources\ProductResource;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\ProductCreateRequest;
@@ -17,7 +17,8 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            return Product::all();
+            $products = Product::paginate(10);
+            return ProductResource::collection($products);
         } catch (\Throwable $th) {
             Log::error('Error retrieving products: ' . $th->getMessage());
             return response('Unexpected Error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
@@ -31,7 +32,7 @@ class ProductController extends Controller
     {
         try {
             $product = Product::create($request->only(['title', 'description', 'image', 'price']));
-            return response($product, HttpResponse::HTTP_CREATED);
+            return response(new ProductResource($product), HttpResponse::HTTP_CREATED);
         } catch (\Throwable $th) {
             Log::error('Error store a product: ' . $th->getMessage());
             return response('Unexpected Error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
@@ -45,10 +46,10 @@ class ProductController extends Controller
     {
         try {
             $product = Product::find($id);
-            if(!$product) {
+            if (!$product) {
                 return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
             }
-            return response($product);
+            return response(new ProductResource($product));
         } catch (\Throwable $th) {
             Log::error('Error retrieving a product: ' . $th->getMessage());
             return response('Unexpected Error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
@@ -62,11 +63,11 @@ class ProductController extends Controller
     {
         try {
             $product = Product::find($id);
-            if(!$product){
+            if (!$product) {
                 return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
             }
             $product->update($request->only(['title', 'description', 'image', 'price']));
-            return response($product, HttpResponse::HTTP_ACCEPTED);
+            return response(new ProductResource($product), HttpResponse::HTTP_ACCEPTED);
         } catch (\Throwable $th) {
             Log::error('Error updating a product: ' . $th->getMessage());
             return response('Unexpected Error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
@@ -80,7 +81,7 @@ class ProductController extends Controller
     {
         try {
             $product = Product::find($id);
-            if(!$product){
+            if (!$product) {
                 return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
             }
             $product->delete();
