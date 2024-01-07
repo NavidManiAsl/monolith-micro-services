@@ -85,7 +85,7 @@ class ProductController extends Controller
                 return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
             }
             $product->delete();
-            return response($product, HttpResponse::HTTP_NO_CONTENT);
+            return response(null, HttpResponse::HTTP_NO_CONTENT);
         } catch (\Throwable $th) {
             Log::error('Error deleting a product: ' . $th->getMessage());
             return response('Unexpected Error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
