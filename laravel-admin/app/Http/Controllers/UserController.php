@@ -32,6 +32,9 @@ class UserController extends Controller
     public function show($userId)
     {
         $user = User::find($userId);
+        if(!$user){
+            return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
+        }
         return new UserResource($user);
     }
 
@@ -67,7 +70,7 @@ class UserController extends Controller
         $user = User::find($userId);
 
         if (!$user) {
-            throw new ModelNotFoundException('User not found with ID: ' . $userId);
+            return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
         }
         try {
             $user->update($userData->only('first_name', 'last_name', 'email', 'role_id'));
@@ -88,7 +91,7 @@ class UserController extends Controller
         $user = User::find($userId);
 
         if (!$user) {
-            throw new ModelNotFoundException('User not found with ID: ' . $userId);
+            return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
         }
 
         try {
