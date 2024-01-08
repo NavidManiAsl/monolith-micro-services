@@ -8,6 +8,7 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\ProductCreateRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -30,8 +31,15 @@ class ProductController extends Controller
      */
     public function store(ProductCreateRequest $request)
     {
+
+        $file = $request->file('image');
+        $name = uuid_create() . '.'
+            . $file->getClientOriginalExtension();
+        $url = Storage::putFileAs('images', $file, $name);
+        
+
         try {
-            $product = Product::create($request->only(['title', 'description', 'image', 'price']));
+            $product = Product::create($request->only('title', 'description', 'price') + ['image' => $url]);
             return response(new ProductResource($product), HttpResponse::HTTP_CREATED);
         } catch (\Throwable $th) {
             Log::error('Error store a product: ' . $th->getMessage());
