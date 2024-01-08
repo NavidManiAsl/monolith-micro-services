@@ -35,8 +35,8 @@ class ProductController extends Controller
         $file = $request->file('image');
         $name = uuid_create() . '.'
             . $file->getClientOriginalExtension();
-        $url = Storage::putFileAs('images', $file, $name);
-        
+            $url = env('APP_URL').Storage::putFileAs('images', $file, $name);
+
 
         try {
             $product = Product::create($request->only('title', 'description', 'price') + ['image' => $url]);
@@ -69,12 +69,24 @@ class ProductController extends Controller
      */
     public function update(ProductUpdateRequest $request, string $id)
     {
+
         try {
             $product = Product::find($id);
             if (!$product) {
                 return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
             }
-            $product->update($request->only(['title', 'description', 'image', 'price']));
+
+            $image = $request->file('image');
+            if ($image) {
+                $name = uuid_create() . '.' . $image->getClientOriginalExtension();
+                $url = env('APP_URL').Storage::putFileAs('images', $image, $name);
+            }
+
+            $data = $image
+                ? array_merge($request->only('title', 'description', 'price'), ['image' => $url])
+                : $request->only('title', 'description', 'price');
+
+            $product->update($data);
             return response(new ProductResource($product), HttpResponse::HTTP_ACCEPTED);
         } catch (\Throwable $th) {
             Log::error('Error updating a product: ' . $th->getMessage());
