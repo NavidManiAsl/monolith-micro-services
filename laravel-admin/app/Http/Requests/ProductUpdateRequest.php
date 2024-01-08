@@ -32,7 +32,7 @@ class ProductUpdateRequest extends FormRequest
                 'min:3',
                 'max:1024'
             ],
-            'image' => ['url'],
+            'image' => ['image'],
             'price' => ['numeric']
         ];
     }
