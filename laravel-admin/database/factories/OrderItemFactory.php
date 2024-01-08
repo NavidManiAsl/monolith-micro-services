@@ -20,7 +20,7 @@ class OrderItemFactory extends Factory
     {
         return [
             'title' => Product::inRandomOrder()->first()->title,
-            'quantity' =>fake()->randomNumber(1),
+            'quantity' =>fake()->numberBetween(1,5),
             'price' => fake()->randomFloat(2,10,150)
         ];
     }
