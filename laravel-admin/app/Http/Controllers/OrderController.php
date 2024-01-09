@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response as HttpResponse;
 
 class OrderController extends Controller
 {
@@ -11,38 +15,37 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $orders = Order::with('orderItems')->paginate(10);
+
+            return OrderResource::collection($orders);
+
+        } catch (\Throwable $th) {
+            Log::error('Error retrieving orders: ' . $th->getMessage());
+            return response('Unexpected error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        try {
+
+            $order = Order::find($id);
+
+            if (!$order) {
+                return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
+            }
+
+            return new OrderResource($order);
+        } catch (\Throwable $th) {
+            Log::error('Error retrieving orders: ' . $th->getMessage());
+            return response('Unexpected error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
