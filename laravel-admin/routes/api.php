@@ -13,7 +13,7 @@ Route::get('login', function(){
 });
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register']);
-Route::apiResource('orders', OrderController::class);
+Route::apiResource('orders', OrderController::class)->only('index', 'show');
 Route::apiResource('products', ProductController::class);
 Route::apiResource('roles', RoleController::class);
 Route::apiResource('users',UserController::class)->middleware('auth:api');
