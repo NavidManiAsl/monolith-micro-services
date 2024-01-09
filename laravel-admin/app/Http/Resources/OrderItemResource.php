@@ -17,8 +17,8 @@ class OrderItemResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'price' => $this->price,
-            'quantity' => $this->quantity,
+            'price' => (int) $this->price,
+            'quantity' => (int) $this->quantity,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
