@@ -47,5 +47,27 @@ class OrderController extends Controller
         }
     }
 
+    public function export()
+    {
+
+        $headers = [
+            'Content-Type' => 'text/csv'
+        ];
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            $orders = Order::with('orderItems')->get();
+            fputcsv($file, ['ID', 'NAME', 'EMAIL', 'PRODUCT TITLE', 'PRICE', 'QUANTITY']);
+            foreach ($orders as $order) {
+                foreach ($order->orderItems as $orderItem) {
+                    fputcsv($file, [$order->id, $order->name, $order->email, $orderItem->title, $orderItem->price, $orderItem->quantity]);
+                }
+            }
+        };
+
+        return response()->streamDownload($callback, 'orders.csv', $headers, );
+
+
+    }
+
 
 }
