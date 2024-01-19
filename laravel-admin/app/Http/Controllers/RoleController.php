@@ -7,6 +7,7 @@ use App\Models\Role;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use App\Http\Resources\RoleResource;
 
 class RoleController extends Controller
 {
@@ -15,7 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return Role::all();
+        return RoleResource::collection(Role::all());
     }
 
     /**
@@ -29,7 +30,7 @@ class RoleController extends Controller
                 'name' => $request->input('name')
             ]);
 
-            return response($role, Response::HTTP_CREATED);
+            return response()->json( new RoleResource($role), Response::HTTP_CREATED);
         } catch (Throwable $th) {
             Log::error('Error create role: ' . $th->getMessage());
             return response(['Error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -45,7 +46,7 @@ class RoleController extends Controller
         if(!$role){
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
-        return response($role, Response::HTTP_OK);
+        return response()->json(new RoleResource($role), Response::HTTP_OK);
     }
 
     /**
@@ -63,7 +64,7 @@ class RoleController extends Controller
             $role->update([
                 'name' => $request->input('name')
             ]);
-            return response($role, Response::HTTP_ACCEPTED);
+            return response()->json(new RoleResource($role), Response::HTTP_ACCEPTED);
         } catch (Throwable $th) {
             Log::error('Error update role: ' . $th->getMessage());
             return response(['Error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
