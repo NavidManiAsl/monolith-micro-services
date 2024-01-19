@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 use App\Http\Resources\RoleResource;
+use Illuminate\support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -29,8 +30,11 @@ class RoleController extends Controller
             $role = Role::create([
                 'name' => $request->input('name')
             ]);
+            if ($permissions = $request->input('permissions')) {
+                $role->permissions()->attach($permissions);
+            }
 
-            return response()->json( new RoleResource($role), Response::HTTP_CREATED);
+            return response()->json(new RoleResource($role), Response::HTTP_CREATED);
         } catch (Throwable $th) {
             Log::error('Error create role: ' . $th->getMessage());
             return response(['Error' => 'Unexpected error'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -43,7 +47,7 @@ class RoleController extends Controller
     public function show(string $id)
     {
         $role = Role::find($id);
-        if(!$role){
+        if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
         return response()->json(new RoleResource($role), Response::HTTP_OK);
@@ -55,15 +59,22 @@ class RoleController extends Controller
     public function update(Request $request, string $id)
     {
         $role = Role::find($id);
-
         if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
+        $currentPermissions = $role->permissions;
         try {
 
             $role->update([
                 'name' => $request->input('name')
             ]);
+            if ($newPermissions = $request->input('permissions')) {
+                $permissions = array_merge($currentPermissions, $newPermissions);
+                $role->permissions()->detach();
+
+                $role->permissions()->attach($permissions);
+            }
+
             return response()->json(new RoleResource($role), Response::HTTP_ACCEPTED);
         } catch (Throwable $th) {
             Log::error('Error update role: ' . $th->getMessage());
@@ -81,6 +92,7 @@ class RoleController extends Controller
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
         try {
+            $role->permissions()->detach();
             $role->delete();
             return response(null, Response::HTTP_NO_CONTENT);
         } catch (Throwable $th) {
