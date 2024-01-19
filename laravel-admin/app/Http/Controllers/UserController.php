@@ -7,7 +7,8 @@ use App\Http\Requests\UserUpdateInfoRequest;
 use App\Http\Requests\UserUpdatePasswordRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Role;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Response as HttpResponse;
@@ -107,7 +108,12 @@ class UserController extends Controller
      */
     public function user()
     {
-        return Auth::user();
+        $user = Auth::user();
+        return response()->json((new UserResource($user))->additional([
+            'data' =>[
+                'permissions' =>$user->permissions()
+            ]
+        ]));
     }
 
     /**
