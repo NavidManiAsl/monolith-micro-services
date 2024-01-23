@@ -123,7 +123,9 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-
+        if(!$user) {
+            return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
+        }
         try {
             $user->update($request->only('first_name', 'last_name', 'email'));
 
