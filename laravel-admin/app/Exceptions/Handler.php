@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -21,10 +22,10 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
-    public function register(): void
+    public function render($request, Throwable $e): Response
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        return response([
+            'error' => $e->getMessage(),
+        ], $e->getCode() ?: 400);
     }
 }
