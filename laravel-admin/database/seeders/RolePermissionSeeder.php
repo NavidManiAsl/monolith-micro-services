@@ -40,7 +40,7 @@ class RolePermissionSeeder extends Seeder
                 );
             }
         }
-        $viewer = Role::whereName('editor')->first();
+        $viewer = Role::whereName('viewer')->first();
         $viewerPermissions = [
             'view_products',
             'view_roles',
