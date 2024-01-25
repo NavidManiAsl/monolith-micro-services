@@ -52,4 +52,11 @@ class User extends Authenticatable
     public function permissions (){
         return $this->role->permissions;
     }
+
+    /**
+     * Check the given user's ability to access to certain info
+     */
+    public function hasAccess($model){
+        return $this->permissions()->contains("view_{$model}");
+    }
 }
