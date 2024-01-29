@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
@@ -23,3 +24,4 @@ Route::put('users/info', [UserController::class, 'updateInfo']);
 Route::put('users/password', [UserController::class, 'updatePassword']);
 Route::get('export', [OrderController::class, 'export']);
 Route::get('permissions', [PermissionController::class, 'index']);
+Route::get('chart', [DashboardController::class, 'chart']);
