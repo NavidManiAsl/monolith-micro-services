@@ -56,7 +56,9 @@ class User extends Authenticatable
     /**
      * Check the given user's ability to access to certain info
      */
-    public function hasAccess($model){
-        return $this->permissions()->contains("view_{$model}");
+    public function hasAccess($access){
+
+        return $this->permissions()->pluck('name')->contains($access);
+
     }
 }
