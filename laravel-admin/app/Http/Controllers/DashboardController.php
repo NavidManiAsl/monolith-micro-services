@@ -20,7 +20,7 @@ class DashboardController extends Controller
             return response($orders) ;
 
         }catch(\Throwable $th){
-            Log::error('error retrieve chart: '. $th->getMessage);
+            Log::error('error retrieve chart: '. $th->getMessage());
             return response('Unexpected error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
