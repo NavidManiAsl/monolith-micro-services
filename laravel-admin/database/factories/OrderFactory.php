@@ -19,7 +19,8 @@ class OrderFactory extends Factory
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'email' =>fake()->email()
+            'email' =>fake()->email(),
+            'created_at' =>fake()->dateTime()
         ];
     }
 }
