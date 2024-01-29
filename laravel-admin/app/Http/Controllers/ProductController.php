@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\ProductCreateRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
@@ -17,6 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        Gate::authorize('view','products');
         try {
             $products = Product::paginate(10);
             return ProductResource::collection($products);
@@ -31,7 +33,7 @@ class ProductController extends Controller
      */
     public function store(ProductCreateRequest $request)
     {
-
+        Gate::authorize('edit','products');
         $file = $request->file('image');
         $name = uuid_create() . '.'
             . $file->getClientOriginalExtension();
@@ -52,6 +54,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
+        Gate::authorize('view','products');
         try {
             $product = Product::find($id);
             if (!$product) {
@@ -69,7 +72,7 @@ class ProductController extends Controller
      */
     public function update(ProductUpdateRequest $request, string $id)
     {
-
+        Gate::authorize('edit','products');
         try {
             $product = Product::find($id);
             if (!$product) {
@@ -99,6 +102,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        Gate::authorize('edit','products');
         try {
             $product = Product::find($id);
             if (!$product) {

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -23,6 +24,8 @@ class UserController extends Controller
      */
     public function index()
     {
+
+        Gate::authorize('view', 'users');
         $users = User::paginate(10);
         return UserResource::collection($users);
     }
@@ -32,8 +35,10 @@ class UserController extends Controller
      */
     public function show($userId)
     {
+        Gate::authorize('view', 'users');
+
         $user = User::find($userId);
-        if(!$user){
+        if (!$user) {
             return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
         }
         return new UserResource($user);
@@ -44,6 +49,7 @@ class UserController extends Controller
      */
     public function store(UserCreateRequest $userData)
     {
+        Gate::authorize('edit', 'users');
 
         try {
             $user = User::create([
@@ -68,6 +74,8 @@ class UserController extends Controller
      */
     public function update($userId, UserUpdateRequest $userData)
     {
+        Gate::authorize('view', 'users');
+
         $user = User::find($userId);
 
         if (!$user) {
@@ -89,6 +97,9 @@ class UserController extends Controller
      */
     public function destroy($userId)
     {
+
+        Gate::authorize('view', 'users');
+
         $user = User::find($userId);
 
         if (!$user) {
@@ -110,8 +121,8 @@ class UserController extends Controller
     {
         $user = Auth::user();
         return response()->json((new UserResource($user))->additional([
-            'data' =>[
-                'permissions' =>$user->permissions()
+            'data' => [
+                'permissions' => $user->permissions()
             ]
         ]));
     }
@@ -123,7 +134,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        if(!$user) {
+        if (!$user) {
             return response('Not Found', HttpResponse::HTTP_NOT_FOUND);
         }
         try {

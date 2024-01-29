@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Role;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 use App\Http\Resources\RoleResource;
@@ -17,6 +18,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        Gate::authorize('view','roles');
         return RoleResource::collection(Role::all());
     }
 
@@ -25,6 +27,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('edit','roles');
         try {
 
             $role = Role::create([
@@ -46,6 +49,7 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
+        Gate::authorize('view','roles');
         $role = Role::find($id);
         if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
@@ -58,6 +62,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        Gate::authorize('edit','roles');
         $role = Role::find($id);
         if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);
@@ -87,6 +92,7 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
+        Gate::authorize('edit','roles');
         $role = Role::find($id);
         if (!$role) {
             return response(['Error' => 'Not found'], Response::HTTP_NOT_FOUND);

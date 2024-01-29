@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -15,6 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
+        Gate::authorize('view','orders');
         try {
             $orders = Order::with('orderItems')->paginate(10);
 
@@ -32,6 +34,7 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
+        Gate::authorize('view','orders');
         try {
 
             $order = Order::find($id);
@@ -49,7 +52,7 @@ class OrderController extends Controller
 
     public function export()
     {
-
+        Gate::authorize('view','orders');
         $headers = [
             'Content-Type' => 'text/csv'
         ];
