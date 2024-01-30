@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PermissionController;
 
 
-Route::get('login', function(){
-    return response(['Error' => 'Unauthorized'],401);
+Route::get('login', function () {
+    return response(['Error' => 'Unauthorized'], 401);
 });
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register']);
-Route::apiResource('orders', OrderController::class)->only('index', 'show');
-Route::apiResource('products', ProductController::class);
-Route::apiResource('roles', RoleController::class);
-Route::apiResource('users',UserController::class)->middleware('auth:api');
-Route::get('user', [UserController::class, 'user'])->middleware('auth:api');
-Route::put('users/info', [UserController::class, 'updateInfo']);
-Route::put('users/password', [UserController::class, 'updatePassword']);
-Route::get('export', [OrderController::class, 'export']);
-Route::get('permissions', [PermissionController::class, 'index']);
-Route::get('chart', [DashboardController::class, 'chart']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::apiResource('orders', OrderController::class)->only('index', 'show');
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('roles', RoleController::class);
+    Route::apiResource('users', UserController::class);
+    Route::get('user', [UserController::class, 'user']);
+    Route::put('users/info', [UserController::class, 'updateInfo']);
+    Route::put('users/password', [UserController::class, 'updatePassword']);
+    Route::get('export', [OrderController::class, 'export']);
+    Route::get('permissions', [PermissionController::class, 'index']);
+    Route::get('chart', [DashboardController::class, 'chart']);
+
+});
